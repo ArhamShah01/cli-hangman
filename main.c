@@ -7,13 +7,11 @@
 #define MAX_WORD_LEN 20
 #define NUM_WORDS 500
 
-// Difficulty levels
 #define EASY 1
 #define MEDIUM 2
 #define HARD 3
 #define IMPOSSIBLE 4
 
-// Predefined word list
 const char *words[NUM_WORDS] = {
     "APPLE", "BANANA", "CHERRY", "DATE", "ELDERBERRY", "FIG", "GRAPE", "HONEYDEW",
     "KIWI", "LEMON", "MANGO", "NECTARINE", "ORANGE", "PEACH", "QUINCE", "RASPBERRY",
@@ -86,15 +84,15 @@ int selectDifficulty() {
 int getMaxAttempts(int difficulty) {
     switch(difficulty) {
         case EASY:
-            return 999;  // Unlimited
+            return 999;
         case MEDIUM:
             return 6;
         case HARD:
             return 3;
         case IMPOSSIBLE:
-            return 1;    // Only 1 wrong allowed
+            return 1;
         default:
-            return 6;    // Default to medium
+            return 6; 
     }
 }
 
@@ -132,11 +130,9 @@ int main() {
     int difficulty;
     
     srand(time(NULL));
-    
-    // Get difficulty level
+
     difficulty = selectDifficulty();
-    
-    // Validate difficulty choice
+
     if (difficulty < 1 || difficulty > 4) {
         printf("Invalid choice! Defaulting to MEDIUM.\n");
         difficulty = MEDIUM;
@@ -144,20 +140,17 @@ int main() {
     
     maxAttempts = getMaxAttempts(difficulty);
     attemptsLeft = maxAttempts;
-    
-    // Select random word
+
     int wordIndex = rand() % NUM_WORDS;
     strcpy(word, words[wordIndex]);
     wordLen = strlen(word);
     
-    // Initialize display and guessed array
     memset(display, '_', wordLen);
     display[wordLen] = '\0';
     memset(guessed, 0, sizeof(guessed));
     
     printInstructions(difficulty, maxAttempts);
-    
-    // Main game loop
+
     while (attemptsLeft > 0 && !gameOver) {
         printf("\nWord: %s\n", display);
         
@@ -176,22 +169,19 @@ int main() {
         printf("Enter your guess (a-z): ");
         scanf(" %c", &guess);
         guess = toupper(guess);
-        
-        // Validate input
+
         if (guess < 'A' || guess > 'Z') {
             printf("Please enter a valid letter (a-z)!\n");
             continue;
         }
-        
-        // Check for repeated guess
+
         if (guessed[guess - 'A']) {
             printf("You already guessed '%c'! Try another.\n", guess);
             continue;
         }
         
         guessed[guess - 'A'] = 1;
-        
-        // Check if letter is in word
+
         found = 0;
         for (i = 0; i < wordLen; i++) {
             if (word[i] == guess) {
@@ -203,16 +193,14 @@ int main() {
         if (!found) {
             attemptsLeft--;
             printf("Wrong! '%c' is not in the word.\n", guess);
-            
-            // Check for instant loss on IMPOSSIBLE mode
+
             if (difficulty == IMPOSSIBLE && attemptsLeft == 0) {
                 printf("ONE STRIKE AND YOU'RE OUT!\n");
             }
         } else {
             printf("Good! '%c' is in the word.\n", guess);
         }
-        
-        // Check win condition
+
         gameOver = 1;
         for (i = 0; i < wordLen; i++) {
             if (display[i] == '_') {
@@ -221,8 +209,7 @@ int main() {
             }
         }
     }
-    
-    // Game over screen - NO BOXES
+
     printf("\n=== GAME OVER ===\n");
     printf("%s MODE\n\n", getDifficultyName(difficulty));
     
